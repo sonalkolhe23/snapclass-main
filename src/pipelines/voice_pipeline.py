@@ -20,6 +20,8 @@ def get_voice_embedding(audio_bytes):
         st.error("Voice recognition error")
         return None
     
+    
+    
 def identify_speaker(new_embedding, candidates_dict, threshold=0.65):
     if new_embedding is None or not candidates_dict:
         return None, 0.0
@@ -37,6 +39,8 @@ def identify_speaker(new_embedding, candidates_dict, threshold=0.65):
         return best_sid, best_score
     
     return None, best_score
+
+
 
 def process_bulk_audio(audio_bytes, candidates_dict, threshold=0.65):
     
