@@ -11,7 +11,8 @@ from src.pipelines.voice_pipeline  import get_voice_embedding
 from src.database.db import get_all_students, create_student,get_student_subjects,get_student_attendance,unenroll_student_to_subject
 import time
 
-
+from src.components.dialog_enroll import enroll_dialog
+from src.components.subject_card  import subject_card
 
 def student_dashboard():
     student_data = st.session_state.student_data
@@ -34,8 +35,8 @@ def student_dashboard():
         st.header("Your Enrolled Subjects")
     with c2:
         if st.button("Enroll in Subject ", type="primary",width="stretch"):
-            # enroll_dialog()
-            print("XYZ")
+            enroll_dialog()
+            
             
     
     st.divider()
@@ -67,22 +68,22 @@ def student_dashboard():
         stats = stats_map.get(sid, {"total":0, "attended":0})
         def unenroll_button():
             if st.button("Unenroll from this course", type="tertiary", width="stretch",icon = ":material/delete_forever:"):
-                unenroll_student_to_subject(student_id,sid)
+                unenroll_student_to_subject(student_id, sid)
                 st.toast(f"Unenrolled from {sub['name']} successfully!")
                 st.rerun()
                 
-        # with cols[i%2]:
+        with cols[i%2]:
             
-        #     subject_card(
-        #         name = sub['name'],
-        #         code = sub['subject_code'],
-        #         section = sub['section'],
-        #         stats = [
-        #             ('📅', 'Total', stats['total']),
-        #             ('✅', 'Attended', stats['attended']),
-        #         ],
-        #         footer_callback = unenroll_button
-        #     )
+            subject_card(
+                name = sub['name'],
+                code = sub['subject_code'],
+                section = sub['section'],
+                stats = [
+                    ('📅', 'Total', stats['total']),
+                    ('✅', 'Attended', stats['attended']),
+                ],
+                footer_callback = unenroll_button
+            )
     footer_dashboard()
         
             
@@ -127,7 +128,7 @@ def student_screen():
                st.warning('Multiple faces found')
            else:
                if detected:
-                   student_id = list(detected_keys())[0]
+                   student_id = list(detected.keys())[0]
                    all_students = get_all_students()
                    student = next((s for s in all_students if s['student_id'] == student_id), None)
                    
